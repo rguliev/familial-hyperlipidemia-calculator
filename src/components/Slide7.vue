@@ -2,7 +2,7 @@
 <div class="container">
     <h1 class="title is-4">Назначение терапии</h1>
 
-    <div class="columns is-vcentered">
+    <div class="columns">
       <div class="column has-text-justified">Перед назначением высоких доз розувастатина может быть рекомендовано генетическое тестирование по панели <b>Профиль «ФАРМА-скрин-транспорт»</b>.Внесите результаты тестирования маркер rs2231142 в гене ABCG2:</div>
     </div>
     <div class="columns">
@@ -15,13 +15,15 @@
       </div>
     </div>
 
-    <div class="columns is-vcentered">
-      <div class="column is-three-quarters has-text-justified">Перед назначением высоких доз статинов желательно тестирование маркера rs4149056 гена SLCO1B1. Внесите результаты тестирования:</div>
+    <div class="columns">
+      <div class="column has-text-justified">Перед назначением высоких доз статинов желательно тестирование маркера rs4149056 гена SLCO1B1. Внесите результаты тестирования:</div>
     </div>
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
         <b-field>
-            <b-input v-model="geneSLCO1B1" ></b-input>
+            <b-radio-button v-model="geneSLCO1B1" native-value="TT">TT</b-radio-button>
+            <b-radio-button v-model="geneSLCO1B1" native-value="TC">TC</b-radio-button>
+            <b-radio-button v-model="geneSLCO1B1" native-value="CC">CC</b-radio-button>
         </b-field>
       </div>
     </div>
