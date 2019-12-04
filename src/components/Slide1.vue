@@ -9,7 +9,7 @@
         :header-checkable="headerCheckable"
         checkbox-position="right"></b-table>
         <hr>
-        <b-button size="is-medium" type="is-primary" expanded>Далее</b-button>
+        <b-button size="is-medium" type="is-primary" expanded @click="$emit('next', numChecked)">Далее</b-button>
 </div>
 </template>
 
@@ -39,6 +39,11 @@
                         label: 'Вопрос',
                     }
                 ]
+            }
+        },
+        computed: {
+            numChecked: function () {
+                return this.checkedRows.length
             }
         }
     }

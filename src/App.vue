@@ -1,23 +1,26 @@
 <template>
   <div id="app">
     <section v-if="activeSlide == 1" class="section">
-        <Slide1/>
+        <Slide1 @next="slide1Next" />
     </section>
-    <section  v-if="activeSlide == 1" class="section">
-        <Slide2/>
+    <section  v-if="activeSlide == 2" class="section">
+        <Slide2 @next="slide2Next"/>
     </section>
-    <section  v-if="activeSlide == 1" class="section">
-        <Slide34/>
+    <section  v-if="activeSlide == 3" class="section">
+        <Slide34 @next="slide3Next"/>
     </section>
-    <section  v-if="activeSlide == 1" class="section">
-        <Slide5/>
+    <section  v-if="activeSlide == 5" class="section">
+        <Slide5 @next="slide5Next"/>
     </section>
-    <section  v-if="activeSlide == 1" class="section">
-        <Slide6/>
+    <section  v-if="activeSlide == 6" class="section">
+        <Slide6 @next="slide6Next"/>
     </section>
-    <section  v-if="activeSlide == 1" class="section">
-        <Slide7/>
+    <section  v-if="activeSlide == 7" class="section">
+        <Slide7 @next="slide7Next"/>
     </section>
+    <!--section  v-if="activeSlide == 0" class="section">
+        <Conclusion/>
+    </section-->
   </div>
 </template>
 
@@ -40,7 +43,57 @@ export default {
   },
   data() {
     return {
-      activeSlide: 1
+      activeSlide: 1,
+      answers: {
+        'slide1': null,
+        'slide2': null,
+        'slide34': null,
+        'slide5': null,
+        'slide6': null,
+        'slide7': null,
+      }
+    }
+  },
+  methods: {
+    slide1Next: function(numChecked) {
+      this.answers.slide1 = numChecked
+      if (numChecked) {
+        this.activeSlide = 3
+      } else {
+        this.activeSlide = 2
+      }
+    },
+    slide2Next: function(answer) {
+      this.answers.slide2 = answer
+      if (answer) {
+        this.activeSlide = 7
+      } else {
+        this.activeSlide = 0
+      }
+    },
+    slide3Next: function(score) {
+      this.answers.slide3 = score
+      if (score >= 6) {
+        this.activeSlide = 5
+      } else {
+        this.activeSlide = 0
+      }
+    },
+    slide5Next: function(geneApoB) {
+      this.answers.slide5 = geneApoB
+      if (geneApoB === null) {
+        this.activeSlide = 6
+      } else {
+        this.activeSlide = 0
+      }
+    },
+    slide6Next: function(answer) {
+      this.answers.slide6 = answer
+      this.activeSlide = 0
+    },
+    slide7Next: function(geneABCG2, geneSLCO1B1) {
+      this.answers.slide7 = [geneABCG2, geneSLCO1B1]
+      this.activeSlide = 0
     }
   }
 }

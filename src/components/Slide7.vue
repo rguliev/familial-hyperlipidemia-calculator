@@ -29,8 +29,12 @@
     </div>
 
     <div class="columns">
-        <div class="column"><b-button type="is-light is-medium" expanded>Пропустить</b-button></div>
-        <div class="column"><b-button type="is-primary is-medium" outlined expanded>Далее</b-button></div>
+        <div class="column">
+            <b-button type="is-light is-medium" expanded @click="$emit('next', null, null)">Пропустить</b-button>
+        </div>
+        <div class="column">
+            <b-button type="is-primary is-medium" outlined expanded @click="$emit('next', geneABCG2, geneSLCO1B1)">Далее</b-button>
+        </div>
     </div>
 </div>
 </template>

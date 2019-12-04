@@ -36,7 +36,7 @@
         </tbody>
     </table>
     <hr>
-    <b-button v-show="isAnyClicked" size="is-medium" type="is-primary" expanded>Далее</b-button>
+    <b-button v-show="isAnyClicked" size="is-medium" type="is-primary" expanded @click="$emit('next', totalScore)">Далее</b-button>
 </div>
 </template>
 

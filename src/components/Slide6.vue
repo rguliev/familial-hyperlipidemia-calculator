@@ -9,8 +9,12 @@
       </div>
     </div>
     <div class="columns">
-        <div class="column"><b-button type="is-primary is-medium" outlined expanded>Нет</b-button></div>
-        <div class="column"><b-button type="is-primary is-medium" outlined expanded>Да</b-button></div>
+        <div class="column">
+          <b-button type="is-primary is-medium" outlined expanded @click="$emit('next', false)">Нет</b-button>
+        </div>
+        <div class="column">
+          <b-button type="is-primary is-medium" outlined expanded @click="$emit('next', true)">Да</b-button>
+        </div>
     </div>
 </div>
 </template>
