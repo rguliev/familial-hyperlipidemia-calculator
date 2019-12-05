@@ -18,9 +18,9 @@
     <section  v-if="activeSlide == 7" class="section">
         <Slide7 @next="slide7Next"/>
     </section>
-    <!--section  v-if="activeSlide == 0" class="section">
-        <Conclusion/>
-    </section-->
+    <section  v-if="activeSlide == 0" class="section">
+        <Conclusion :answers="answers"/>
+    </section>
   </div>
 </template>
 
@@ -31,6 +31,7 @@ import Slide34 from "./components/Slide34";
 import Slide5 from "./components/Slide5";
 import Slide6 from "./components/Slide6";
 import Slide7 from "./components/Slide7";
+import Conclusion from "./components/Conclusion";
 export default {
   name: 'app',
   components: {
@@ -39,7 +40,8 @@ export default {
     Slide34,
     Slide5,
     Slide6,
-    Slide7
+    Slide7,
+    Conclusion
   },
   data() {
     return {
@@ -92,7 +94,11 @@ export default {
       this.activeSlide = 0
     },
     slide7Next: function(geneABCG2, geneSLCO1B1) {
-      this.answers.slide7 = [geneABCG2, geneSLCO1B1]
+      if ( (geneABCG2 === null) && (geneSLCO1B1 === null) ){
+        this.answers.slide7 = null
+      } else {
+        this.answers.slide7 = [geneABCG2, geneSLCO1B1]
+      }
       this.activeSlide = 0
     }
   }

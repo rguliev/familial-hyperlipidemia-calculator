@@ -10,8 +10,8 @@
             </tr>
         </thead>
         <tfoot v-if="isAnyClicked">
-            <tr  class="is-selected">
-                <th colspan="2" class="is-centered">
+            <tr>
+                <th colspan="2" class="is-centered is-info">
                     <p>
                         Сумма баллов: {{totalScore}}. {{totalScoreText}}
                     </p>
