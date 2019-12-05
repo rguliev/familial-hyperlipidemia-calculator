@@ -19,7 +19,7 @@
         <Slide7 @next="slide7Next"/>
     </section>
     <section  v-if="activeSlide == 0" class="section">
-        <Conclusion :answers="answers"/>
+        <Conclusion :answers="answers" @home="restart"/>
     </section>
   </div>
 </template>
@@ -74,7 +74,7 @@ export default {
       }
     },
     slide3Next: function(score) {
-      this.answers.slide3 = score
+      this.answers.slide34 = score
       if (score >= 6) {
         this.activeSlide = 5
       } else {
@@ -86,12 +86,12 @@ export default {
       if (geneApoB === null) {
         this.activeSlide = 6
       } else {
-        this.activeSlide = 0
+        this.activeSlide = 7
       }
     },
     slide6Next: function(answer) {
       this.answers.slide6 = answer
-      this.activeSlide = 0
+      this.activeSlide = 7
     },
     slide7Next: function(geneABCG2, geneSLCO1B1) {
       if ( (geneABCG2 === null) && (geneSLCO1B1 === null) ){
@@ -100,6 +100,13 @@ export default {
         this.answers.slide7 = [geneABCG2, geneSLCO1B1]
       }
       this.activeSlide = 0
+    },
+    restart: function () {
+      const keys = Object.keys(this.answers)
+      for (const key of keys) {
+        this.answers[key] = null
+      }
+      this.activeSlide = 1
     }
   }
 }
