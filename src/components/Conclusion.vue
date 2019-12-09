@@ -1,27 +1,12 @@
 <template>
 <div class="container content">
     <h1 class="title">Заключение</h1>
-    <div v-if="conclusionMessages.length">
-        <article
-            v-for="(message, index) in conclusionMessages"
-            :key="index"
-            :class="['message', 'has-text-left', 'is-' + message.type]"
-            >
-            <section class="message-body">
-                <div class="media">
-                    <div v-if="message.icon" class="media-left">
-                        <b-icon
-                            :icon="message.icon"
-                            :class="'is-' + message.type"
-                            both
-                            size="is-small"/>
-                    </div>
-                    <div class="media-content" v-html="message.text">
-                    </div>
-                </div>
-            </section>
-        </article>
-    </div>
+
+    <BMessageWithHTML :title="fhMessage.title" :type="fhMessage.status" has-icon :text="fhMessage.text"/>
+    <BMessageWithHTML v-for="(message, index) in fhGeneMessages" :key="`fh-${index}`" :type="message.status" has-icon :text="message.text"/>
+    <BMessageWithHTML :title="statinMessage.title" :type="statinMessage.status" has-icon :text="statinMessage.text"/>
+    <BMessageWithHTML v-for="(message, index) in statinGeneMessages" :key="`statin-${index}`" :type="message.status" has-icon :text="message.text"/>
+
     <hr>
     <div class="columns">
         <!--div class="column">
@@ -35,8 +20,10 @@
 </template>
 
 <script>
+    import BMessageWithHTML from "./BMessageWithHTML";
     export default {
         name: "Conclusion",
+        components: {BMessageWithHTML},
         props: {
             answers: Object
         },
@@ -49,187 +36,209 @@
             }
         },
         computed: {
-            conclusionMessages: function() {
+            isStatinRequired: function() {
+                return (this.answers.slide2 === "A") || (this.answers.slide2 === "B") || (this.answers.slide34 >= 6)
+            },
+            fhMessage: function () {
+                let message = {
+                        title: 'Диагноз',
+                        status: undefined,
+                        text: undefined
+                    }
+
+                if (!this.answers.slide1) {
+                    message.text = "Вероятность семейной гиперлипидемии низкая"
+                    message.status = "success"
+                } else {
+                    const totalScore = this.answers.slide34
+                    if (totalScore > 8) {
+                        message.text = `У больного <b>определенная</b> семейная гиперлипидемия &mdash; ${totalScore} баллов по критериям Голландской сети липидных клиник`
+                        message.status = "danger"
+                    } else if (totalScore >= 6) {
+                        message.text = `У больного <b>возможная</b> семейная гиперлипидемия &mdash; ${totalScore} баллов по критериям Голландской сети липидных клиник`
+                        message.status = "warning"
+                    } else if (totalScore >= 3) {
+                        message.text = `У больного <b>вероятная</b> семейная гиперлипидемия &mdash; ${totalScore} баллов по критериям Голландской сети липидных клиник`
+                        message.status = "warning"
+                    } else {
+                        // totalScore < 3
+                        message.text = `У больного диагноз семейная гиперлипидемия <b>мало вероятен</b> &mdash; ${totalScore} баллов по критериям Голландской сети липидных клиник`
+                        message.status = "success"
+                    }
+                }
+                return message
+            },
+            statinMessage: function () {
+                let message = {
+                        title: 'Риск осложнений и терапия',
+                        status: undefined,
+                        text: undefined
+                    }
+
+                if ( (this.answers.slide2 === "A") || ((this.answers.slide34 >= 6) && this.answers.slide6) ) {
+                        message.text = `
+                        <ul>
+                            <li>У больного <b>очень высокий</b> риск сердечно-сосудистых осложнений. Показано снижение ХС ЛПНП не менее чем на 50% от исходного уровня, целевое значение ХС ЛПНП менее 1,4 ммоль/л (менее 55 мг/дл)</li>
+                            <li>Препараты первого выбора &mdash; статины. При не достижении целевого уровня ХС ЛПНП на фоне терапии статинами в максимальной переносимой дозе и эзетимибом  к терапии добавляются ингибиторы PCSK9</li>
+                        </ul>
+                        `
+                        message.status = "warning"
+                }
+                if ( (this.answers.slide2 === "B") || ((this.answers.slide34 >= 6) && !this.answers.slide6) ) {
+                        message.text = `
+                        <ul>
+                            <li>У больного <b>высокий</b> риск сердечно-сосудистых осложнений. Показано снижение ХС ЛПНП не менее чем на 50% от исходного уровня, целевое значение ХС ЛПНП – менее 1,8 ммоль/л (менее 70 мг/дл)</li>
+                            <li>Препараты первого выбора &mdash; статины. При не достижении целевого уровня ХС ЛПНП на фоне терапии статинами в максимальной переносимой дозе и эзетимибом  к терапии добавляются ингибиторы PCSK9</li>
+                        </ul>
+                        `
+                        message.status = "warning"
+                }
+                if (this.answers.slide2 === "C") {
+                    message.text = "У больного <b>умеренный</b> риск сердечно-сосудистых осложнений. Целевое значение ХС ЛНП – менее 2,6 ммоль/л (менее 100 мг/дл)."
+                    message.status = "success"
+                }
+                if (this.answers.slide2 === "D") {
+                    message.text = "У больного <b>низкий</b> риск сердечно-сосудистых осложнений. Целевое значение ХС ЛНП – менее 3,0 ммоль/л (менее 116 мг/дл)."
+                    message.status = "success"
+                }
+                return message
+            },
+            fhGeneMessages: function () {
                 let messages = []
-                let geneABCG2 = null
-                let geneSLCO1B1 = null
-                if (this.answers.slide7 !== null) {
+
+                if (this.answers.slide34 >= 6) {
+                    if (this.answers.slide5 === "AA") {
+                        messages.push({
+                            "status": "info",
+                            "text": 'Больной является носителем генотипа AA в гене ApoB (rs5742904). Подтвержден диагноз гомозиготная гиперлипидемия тип B'
+                        })
+                    } else if (this.answers.slide5 === "AG") {
+                        messages.push({
+                            "status": "info",
+                            "text": 'Больной является носителем генотипа AG в гене ApoB (rs5742904). Подтвержден диагноз гомозиготная гиперлипидемия тип B'
+                        })
+                    } else if (this.answers.slide5 === "GG") {
+                        messages.push({
+                            "status": "info",
+                            "text": 'Больной является носителем генотипа GG в гене ApoB (rs5742904). Для точной диагностики характера гиперлипидемии необходимо проведение NGS'
+                        })
+                    } else {
+                        messages.push({
+                            "status": "warning",
+                            "text": 'Для подтверждения диагноза гомозиготная гиперлипидемия рекомендовано тестирование по панели "ЛИПРО-скрин-Б". Маркер rs5742904 в гене ApoB.'
+                        })
+                    }
+                } else {
+                    messages.push({
+                        "status": "success",
+                        "text": "Показаний для генетического тестирования нет"
+                    })
+                }
+                return messages
+            },
+            statinGeneMessages: function() {
+                let messages = []
+                let geneABCG2 = undefined
+                let geneSLCO1B1 = undefined
+                if (this.answers.slide7) {
                     geneABCG2 = this.answers.slide7[0]
                     geneSLCO1B1 = this.answers.slide7[1]
                 }
 
-                if (this.answers.slide1) {
-                    const totalScore = this.answers.slide34
-                    if (totalScore > 8) {
+                if (this.isStatinRequired) {
+                    // Show warning if a required gene is not tested
+                    if (!geneABCG2) {
                         messages.push({
-                            'type': 'danger',
-                            'icon': 'alert-circle',
-                            'text': `У больного определенная семейная гиперлипидемия. ${totalScore} баллов по критериям голландской сети липидных клиник`
-                        })
-                    } else if (totalScore >= 6) {
-                        messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': `У больного возможная семейная гиперлипидемия. ${totalScore} баллов по критериям голландской сети липидных клиник`
-                        })
-                    } else if (totalScore >= 3) {
-                        messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': `У больного вероятная семейная гиперлипидемия. ${totalScore} баллов по критериям голландской сети липидных клиник`
-                        })
-                    } else if (totalScore < 3) {
-                        messages.push({
-                            'type': 'success',
-                            'icon': 'check-circle',
-                            'text': `У больного диагноз семейная гиперлипидемия мало вероятен. ${totalScore} баллов по критериям голландской сети липидных клиник`
-                        })
-                    } else {
-                        messages.push({
-                            'type': 'danger',
-                            'icon': 'alert-circle',
-                            'text': 'Ошибка при заполнении формы. Не доступны данные шкалы голландской сети липидных клиник'
+                            "status": "warning",
+                            "text": "В связи с наличием показаний к терапии статинами показано проведение тестирования гена ABCG2 маркер rs2231142 (профиль \"ФАРМА-скрин-транспорт\")"
                         })
                     }
-                    if (totalScore >= 6) {
-                        // Slide 5
-                        if (this.answers.slide5 === "AA") {
-                            messages.push({
-                                'type': 'info',
-                                'icon': 'information',
-                                'text': 'Больной является носителем генотипа AA в гене ApoB (rs5742904). Подтвержден диагноз гомозиготная гиперлипидемия тип B'
-                            })
-                        } else if (this.answers.slide5 === "AG") {
-                            messages.push({
-                                'type': 'info',
-                                'icon': 'information',
-                                'text': 'Больной является носителем генотипа AG в гене ApoB (rs5742904). Подтвержден диагноз гомозиготная гиперлипидемия тип B'
-                            })
-                        } else if (this.answers.slide5 === "GG") {
-                            messages.push({
-                                'type': 'info',
-                                'icon': 'information',
-                                'text': 'Больной является носителем генотипа GG в гене ApoB (rs5742904). Для точной диагностики характера гиперлипидемии необходимо проведение NGS'
-                            })
-                        } else {
-                            messages.push({
-                                'type': 'warning',
-                                'icon': 'alert',
-                                'text': 'Рекомендовано тестирование по панели "ЛИПРО-скрин-Б". Маркер rs5742904 в гене ApoB.'
-                            })
+                    if (!geneSLCO1B1) {
+                        messages.push({
+                            "status": "warning",
+                            "text": "В связи с наличием показаний к терапии статинами показано проведение тестирования гена SLCO1B1 маркер rs4149056"
+                        })
+                    }
+
+                    if (geneABCG2 || geneSLCO1B1) {
+                        // Generate the first sentence in the output
+                        let firstSentence = "По результатам генетического тестирования выявлено носительство"
+                        if (geneABCG2) {
+                            firstSentence += ` генотипа ${geneABCG2} гена ABCG2 маркер rs2231142`
+                        }
+                        if (geneSLCO1B1) {
+                            let sep = geneABCG2 ? "," : ""
+                            firstSentence += `${sep} генотипа ${geneSLCO1B1} маркера rs4149056 гена SLCO1B1`
                         }
 
-                        // Slide 6
-                        let tmpText = ''
-                        if (this.answers.slide6) {
-                            tmpText = 'Риск очень высокий &mdash; снижение ХС ЛПНП не менее чем на 50% от исходного уровня, целевое значение ХС ЛПНП менее 1,4 ммоль/л (менее 55 мг/дл)'
-                        } else {
-                            tmpText = 'Риск высокий &mdash; снижение ХС ЛПНП не менее чем на 50% от исходного уровня, целевое значение ХС ЛПНП менее 1,8 ммоль/л (менее 70 мг/дл)'
-                        }
-                        messages.push({
-                            'type': 'info',
-                            'icon': 'information',
-                            'text': `Рекомендации:
-                            <ul>
-                                <li>${tmpText}</li>
-                                <li>Препараты первого выбора &mdash; статины. При не достижении целевого уровня ХС ЛПНП на фоне терапии статинами в максимальной переносимой дозе и эзетимибом к терапии добавляются ингибиторы PCSK9</li>
-                            </ul>
-                            `
-                        })
-                    }
-                } else {
-                    // All answers in Slide 1 are false
-                    messages.push({
-                        'type': 'success',
-                        'icon': 'check-circle',
-                        'text': "Вероятность семейной гиперлипидемии низкая."
-                    })
-                    if (! this.answers.slide2) {
-                        messages.push({
-                            'type': 'success',
-                            'icon': 'check-circle',
-                            'text': "Показаний для генетического тестирования нет."
-                        })
-                    }
-                }
-
-                if (this.answers.slide2 || (this.answers.slide34 >=6)) {
-                    // ABCG2
-                    if (geneABCG2 === "AA") {
-                        messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': "По результатам генетического тестирования выявлено носительство генотипа AA гена ABCG2 маркер rs2231142. Не рекомендуется использовать дозы розувастатина более 20 мг/сут"
-                        })
-                    } else if (geneABCG2 === "AC") {
-                        messages.push({
-                            'type': 'info',
-                            'icon': 'information',
-                            'text': "По результатам генетического тестирования выявлено носительство генотипа AC гена ABCG2 маркер rs2231142. Могут быть использованы любые дозы розувастатина, с осторожностью - 40 мг/сут"
-                        })
-                    } else if (geneABCG2 === "CC") {
-                        messages.push({
-                            'type': 'info',
-                            'icon': 'information',
-                            'text': "По результатам генетического тестирования выявлено носительство генотипа CC гена ABCG2 маркер rs2231142. Могут быть максимальные дозы розувастатина"
-                        })
-                    } else {
-                        messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': "В связи с наличием показаний к терапии статинами показано проведение тестирования гена ABCG2 маркер rs2231142 (профиль \"ФАРМА-скрин-транспорт\")"
-                        })
-                    }
-
-                    // SLCO1B1
-                    if (geneSLCO1B1 === "TT") {
-                        messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': `
-                                У больного при проведении тестирования выявлен генотип TT маркера rs4149056 гена SLCO1B1. Не рекомендуется использовать дозы статинов выше указанных:
+                        // Calculate statin dose restrictions. Generate the message.
+                        let statinAllowedDosesText
+                        let statingAllowedDosesStatus = "info"
+                        if (geneSLCO1B1 === "TT") {
+                            statinAllowedDosesText = `
+                                Не рекомендуется использовать дозы статинов выше указанных:
                                 <ul>
-                                    <li>Симвастатин, Аторвастатин и Правастатин &mdash; 80 мг/сут</li>
-                                    <li>Розувастатин &mdash; 40 мг/сут</li>
-                                </ul>
-                            `
-                        })
-                    } else if (geneSLCO1B1 === "TC") {
-                        messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': `
-                                У больного при проведении тестирования выявлен генотип TC маркера rs4149056 гена SLCO1B1. Не рекомендуется использовать дозы статинов выше указанных:
+                                    <li>Симвастатин, Аторвастатин и Правастатин &mdash; возможна терапия максимальными дозами</li>
+                                `
+                            switch (geneABCG2) {
+                                case "AA":
+                                    statinAllowedDosesText = `${statinAllowedDosesText}<li>Розувастатин &mdash; 20 мг/сут</li></ul>`
+                                    break;
+                                case "AС":
+                                    statinAllowedDosesText = `${statinAllowedDosesText}<li>Розувастатин &mdash; 40 мг/сут</li></ul>`
+                                    break;
+                                case "СС":
+                                case undefined:
+                                    statinAllowedDosesText = "Возможна терапия максимальными дозами статинов (Симвастатин, Аторвастатин, Правастатин, Розувастатин)."
+                                    statingAllowedDosesStatus = "success"
+                                    break;
+                            }
+                        } else if (geneSLCO1B1 === "TC") {
+                            statinAllowedDosesText = `
+                                Не рекомендуется использовать дозы статинов выше указанных:
                                 <ul>
                                     <li>Симвастатин, Аторвастатин и Правастатин &mdash; 40 мг/сут</li>
                                     <li>Розувастатин &mdash; 20 мг/сут</li>
                                 </ul>
-                            `
-                        })
-                    } else if (geneSLCO1B1 === "CC") {
-                        messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': `
-                                У больного при проведении тестирования выявлен генотип CC маркера rs4149056 гена SLCO1B1. Не рекомендуется использовать дозы статинов выше указанных:
+                                `
+                        } else if (geneSLCO1B1 === "CC") {
+                            let rozuvastatinConc = (geneABCG2 === "AA") ? 10 : 20
+                            statinAllowedDosesText = `
+                                Не рекомендуется использовать дозы статинов выше указанных:
                                 <ul>
                                     <li>Симвастатин, Аторвастатин &mdash; 20 мг/сут</li>
                                     <li>Правастатин &mdash; 40 мг/сут</li>
-                                    <li>Розувастатин &mdash; 20 мг/сут (10 мг/сут при сочетании с носительством генотипа AA гена BCG2)</li>
+                                    <li>Розувастатин &mdash; ${rozuvastatinConc} мг/сут</li>
                                 </ul>
-                            `
-                        })
-                    } else {
+                                `
+                        } else if (geneABCG2) {
+                            switch (geneABCG2) {
+                                case "AA":
+                                    statinAllowedDosesText = "Не рекомендуется использовать дозы Розувастатина более 20 мг/сут"
+                                    break;
+                                case "AC":
+                                    statinAllowedDosesText = "Могут быть использованы любые дозы Розувастатина, с осторожностью &mdash; 40 мг/сут"
+                                    break;
+                                case "CC":
+                                    statinAllowedDosesText = "Могут быть максимальные дозы Розувастатина"
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                         messages.push({
-                            'type': 'warning',
-                            'icon': 'alert',
-                            'text': "В связи с наличием показаний к терапии статинами показано проведение тестирования гена SLCO1B1 маркер rs4149056"
+                            "status": statingAllowedDosesStatus,
+                            "text": `${firstSentence}<br>${statinAllowedDosesText}`
                         })
                     }
+                } else {
+                    messages.push({
+                        "status": "success",
+                        "text": "Показаний для генетического тестирования нет"
+                    })
                 }
                 return messages
             }
         }
-
     }
 </script>

@@ -3,7 +3,7 @@
     <h1 class="title is-4">Назначение терапии</h1>
 
     <div class="columns">
-      <div class="column has-text-justified">Перед назначением высоких доз розувастатина может быть рекомендовано генетическое тестирование по панели <b>Профиль «ФАРМА-скрин-транспорт»</b>.Внесите результаты тестирования маркер rs2231142 в гене ABCG2:</div>
+      <div class="column has-text-justified">Больному показана терапия статинами. Перед назначением высоких доз розувастатина может быть рекомендовано генетическое тестирование по панели <b>Профиль «ФАРМА-скрин-транспорт»</b>.Внесите результаты тестирования маркер rs2231142 в гене ABCG2:</div>
     </div>
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
@@ -30,7 +30,7 @@
 
     <div class="columns">
         <div class="column">
-            <b-button type="is-light is-medium" expanded @click="$emit('next', null, null)">Пропустить</b-button>
+            <b-button type="is-light is-medium" expanded @click="$emit('next', undefined, undefined)">Пропустить</b-button>
         </div>
         <div class="column">
             <b-button type="is-primary is-medium" outlined expanded @click="$emit('next', geneABCG2, geneSLCO1B1)">Далее</b-button>
@@ -44,9 +44,9 @@
         name: "Slide5",
         data() {
             return {
-                answer: null,
-                geneABCG2: null,
-                geneSLCO1B1: null,
+                answer: undefined,
+                geneABCG2: undefined,
+                geneSLCO1B1: undefined,
             }
         }
     }

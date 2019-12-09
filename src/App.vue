@@ -47,12 +47,12 @@ export default {
     return {
       activeSlide: 1,
       answers: {
-        'slide1': null,
-        'slide2': null,
-        'slide34': null,
-        'slide5': null,
-        'slide6': null,
-        'slide7': null,
+        'slide1': undefined,
+        'slide2': undefined,
+        'slide34': undefined,
+        'slide5': undefined,
+        'slide6': undefined,
+        'slide7': undefined,
       }
     }
   },
@@ -65,9 +65,9 @@ export default {
         this.activeSlide = 2
       }
     },
-    slide2Next: function(answer) {
-      this.answers.slide2 = answer
-      if (answer) {
+    slide2Next: function(group) {
+      this.answers.slide2 = group
+      if ((group === "A") || (group === "B")) {
         this.activeSlide = 7
       } else {
         this.activeSlide = 0
@@ -78,33 +78,29 @@ export default {
       if (score >= 6) {
         this.activeSlide = 5
       } else {
-        this.activeSlide = 0
+        this.activeSlide = 2
       }
     },
     slide5Next: function(geneApoB) {
       this.answers.slide5 = geneApoB
-      if (geneApoB === null) {
-        this.activeSlide = 6
-      } else {
-        this.activeSlide = 7
-      }
+      this.activeSlide = 6
     },
     slide6Next: function(answer) {
       this.answers.slide6 = answer
       this.activeSlide = 7
     },
     slide7Next: function(geneABCG2, geneSLCO1B1) {
-      if ( (geneABCG2 === null) && (geneSLCO1B1 === null) ){
-        this.answers.slide7 = null
-      } else {
+      if (geneABCG2 || geneSLCO1B1){
         this.answers.slide7 = [geneABCG2, geneSLCO1B1]
+      } else {
+        this.answers.slide7 = undefined
       }
       this.activeSlide = 0
     },
     restart: function () {
       const keys = Object.keys(this.answers)
       for (const key of keys) {
-        this.answers[key] = null
+        this.answers[key] = undefined
       }
       this.activeSlide = 1
     }

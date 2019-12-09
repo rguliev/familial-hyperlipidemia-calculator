@@ -24,7 +24,7 @@
         name: "Slide2",
         data() {
             return {
-                answer: null
+                answer: undefined
             }
         }
     }

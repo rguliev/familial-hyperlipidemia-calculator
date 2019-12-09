@@ -22,7 +22,7 @@
 
     <div class="columns">
         <div class="column">
-          <b-button type="is-light is-medium" expanded @click="$emit('next', null)">Пропустить</b-button>
+          <b-button type="is-light is-medium" expanded @click="$emit('next', undefined)">Пропустить</b-button>
         </div>
         <div class="column">
           <b-button type="is-primary is-medium" outlined expanded  @click="$emit('next', geneApoB)">Далее</b-button>
@@ -36,8 +36,8 @@
         name: "Slide5",
         data() {
             return {
-                answer: null,
-                geneApoB: null,
+                answer: undefined,
+                geneApoB: undefined,
             }
         }
     }
