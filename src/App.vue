@@ -134,7 +134,7 @@ export default {
   height: 100%;
   width: 100%;
   max-width: 800px;
-  background-image: url('../src/assets/cardiogene_logo.png');
+  background-image: url('../src/assets/logo.png');
   background-repeat: no-repeat;
   background-position: center;
   background-color: white;
