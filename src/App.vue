@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="bg-white"></div>
     <section v-if="activeSlide == 1" class="section">
         <Slide1 @next="slide1Next" />
     </section>
@@ -115,6 +116,8 @@ export default {
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  background-image: url(../src/assets/bg_heart.png);
+  background-repeat: repeat;
   background-color: #eee;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -131,7 +134,26 @@ export default {
   height: 100%;
   width: 100%;
   max-width: 800px;
+  background-image: url('../src/assets/cardiogene_logo.png');
+  background-repeat: no-repeat;
+  background-position: center;
   background-color: white;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
+  position: relative;
+}
+
+#app .section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+#app .section .container, .table {
+  background-color: transparent;
+  color: inherit;
 }
 </style>

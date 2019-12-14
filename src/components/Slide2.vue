@@ -1,7 +1,7 @@
 <template>
 <div class="container">
     <h2 class="subtitle">Оцените наличие у больного дополнительных факторов риска</h2>
-    <table class="table is-striped is-narrow">
+    <table class="table is-striped is-narrow is-hoverable">
         <thead>
             <tr>
                 <th>№</th>
@@ -9,6 +9,15 @@
                 <th>Балл</th>
             </tr>
         </thead>
+        <tfoot v-if="group">
+            <tr>
+                <th colspan="3" class="is-centered" :class="risk.status">
+                    <p>
+                        {{risk.text}}
+                    </p>
+                </th>
+            </tr>
+        </tfoot>
         <tbody>
             <tr>
                 <td>1</td>
@@ -37,8 +46,8 @@
             </tr>
             <tr>
                 <td>6</td>
-                <td>СКФ, %</td>
-                <td><b-numberinput controls-position="compact" min="0" v-model="answers[5]"></b-numberinput></td>
+                <td>СКФ, мл/мин/1,73 кв.м.</td>
+                <td><b-numberinput controls-position="compact" min="0" v-model="answers[5]" :controls="false"></b-numberinput></td>
             </tr>
             <tr>
                 <td>7</td>
@@ -48,7 +57,7 @@
             <tr>
                 <td>8</td>
                 <td>Расчетный риск по SCORE, %</td>
-                <td><b-numberinput controls-position="compact" min="0" v-model="answers[7]"></b-numberinput></td>
+                <td><b-numberinput controls-position="compact" min="0" v-model="answers[7]" :controls="false"></b-numberinput></td>
             </tr>
         </tbody>
     </table>
@@ -64,13 +73,10 @@
         components: {YesNoButtons},
         data() {
             return {
-                answers: Array(8).fill(NaN),
+                answers: Array(8).fill(undefined),
             }
         },
         computed: {
-            isAllFilled: function() {
-                return ! this.answers.some(isNaN)
-            },
             group: function () {
                 if (this.answers[0] || this.answers[1] || this.answers[2] || (this.answers[5] < 30) || (this.answers[7] >= 10)) {
                     return "A"
@@ -82,6 +88,28 @@
                     return "D"
                 }
                 return undefined
+            },
+            risk: function() {
+                let text, status
+                switch (this.group) {
+                    case "A":
+                        text = "Очень высокий риск сердечно-сосудистых осложнений"
+                        status = "is-danger"
+                        break;
+                    case "B":
+                        text = "Высокий риск сердечно-сосудистых осложнений"
+                        status = "is-danger"
+                        break;
+                    case "C":
+                        text = "Умеренный риск сердечно-сосудистых осложнений"
+                        status = "is-warning"
+                        break;
+                    case "D":
+                        text = "Низкий риск сердечно-сосудистых осложнений"
+                        status = "is-success"
+                        break;
+                }
+                return {text: text, status: status}
             }
         }
     }

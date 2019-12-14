@@ -2,7 +2,7 @@
 <div class="container">
     <h1 class="title is-4">Критерии Голландской сети липидных клиник</h1>
     <h2 class="subtitle">Отметьте наличие у больного следующих состояний</h2>
-    <table class="table is-striped is-narrow">
+    <table class="table is-striped is-narrow is-hoverable">
         <thead>
             <tr>
                 <th>Критерий</th>
