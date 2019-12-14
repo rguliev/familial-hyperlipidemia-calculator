@@ -10,3 +10,5 @@ yarn-error.log*
 
 # Editor settings
 .vscode
+#Electron-builder output
+/dist_electron
