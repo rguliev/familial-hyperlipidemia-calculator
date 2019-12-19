@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <div class="bg-white"></div>
+    <transition name="fade">
+        <Slide0 v-if="activeSlide == 0" @next="slide0Next" />
+    </transition>
     <section v-if="activeSlide == 1" class="section">
         <Slide1 @next="slide1Next" />
     </section>
@@ -19,13 +22,14 @@
     <section  v-if="activeSlide == 7" class="section">
         <Slide7 @next="slide7Next"/>
     </section>
-    <section  v-if="activeSlide == 0" class="section">
+    <section  v-if="activeSlide == 8" class="section">
         <Conclusion :answers="answers" @home="restart"/>
     </section>
   </div>
 </template>
 
 <script>
+import Slide0 from "./components/Slide0";
 import Slide1 from "./components/Slide1";
 import Slide2 from "./components/Slide2";
 import Slide34 from "./components/Slide34";
@@ -36,6 +40,7 @@ import Conclusion from "./components/Conclusion";
 export default {
   name: 'app',
   components: {
+    Slide0,
     Slide1,
     Slide2,
     Slide34,
@@ -46,7 +51,7 @@ export default {
   },
   data() {
     return {
-      activeSlide: 1,
+      activeSlide: 0,
       answers: {
         'slide1': undefined,
         'slide2': undefined,
@@ -58,6 +63,9 @@ export default {
     }
   },
   methods: {
+    slide0Next: function() {
+      this.activeSlide = 1
+    },
     slide1Next: function(numChecked) {
       this.answers.slide1 = numChecked
       if (numChecked) {
@@ -71,7 +79,7 @@ export default {
       if ((group === "A") || (group === "B")) {
         this.activeSlide = 7
       } else {
-        this.activeSlide = 0
+        this.activeSlide = 8
       }
     },
     slide3Next: function(score) {
@@ -96,7 +104,7 @@ export default {
       } else {
         this.answers.slide7 = undefined
       }
-      this.activeSlide = 0
+      this.activeSlide = 8
     },
     restart: function () {
       const keys = Object.keys(this.answers)
@@ -155,5 +163,27 @@ export default {
 #app .section .container, .table {
   background-color: transparent;
   color: inherit;
+}
+
+
+a.cgma-link:link, a.cgma-link:visited {
+    color: black;
+    text-decoration: none;
+}
+
+a.cgma-link:hover {
+    text-decoration: underline;
+}
+
+a.cgma-link:active {
+    color: blue;
+    text-decoration: underline;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 3s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
