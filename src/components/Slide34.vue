@@ -43,6 +43,10 @@
 <script>
     export default {
         name: "Slide34",
+        props: {
+            selfIHD: Boolean,
+            relativeIHD: Boolean
+        },
         data() {
             return {
                 questions: [
@@ -52,7 +56,7 @@
                             {label: "Нет", score: 0},
                             {label: "Да", score: 1},
                         ],
-                        answerScore: NaN
+                        answerScore: this.relativeIHD ? 1 : NaN
                     },
                     {
                         label:'Есть ли у больного родственники первой линии родства с ЛНП> 95 персентиля (с учетом возраста, пола и страны) (ЛНП> 4,9 ммоль/л для взрослых)?',
@@ -84,7 +88,7 @@
                             {label: "Нет", score: 0},
                             {label: "Да", score: 2},
                         ],
-                        answerScore: NaN
+                        answerScore: this.selfIHD ? 2 : NaN
                     },
                     {
                         label: 'Есть ли у больного ЦВБ или периферический атеросклероз, выявленный до 55 лет (муж) или до 60 лет (жен) ?',

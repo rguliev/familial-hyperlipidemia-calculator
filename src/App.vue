@@ -11,7 +11,7 @@
         <Slide2 @next="slide2Next"/>
     </section>
     <section  v-if="activeSlide == 3" class="section">
-        <Slide34 @next="slide3Next"/>
+        <Slide34 :selfIHD="isSelfIHD" :relativeIHD="isRelativeIHD" @next="slide3Next"/>
     </section>
     <section  v-if="activeSlide == 5" class="section">
         <Slide5 @next="slide5Next"/>
@@ -66,9 +66,9 @@ export default {
     slide0Next: function() {
       this.activeSlide = 1
     },
-    slide1Next: function(numChecked) {
-      this.answers.slide1 = numChecked
-      if (numChecked) {
+    slide1Next: function(checkedRows) {
+      this.answers.slide1 = checkedRows
+      if (checkedRows.length) {
         this.activeSlide = 3
       } else {
         this.activeSlide = 2
@@ -87,7 +87,13 @@ export default {
       if (score >= 6) {
         this.activeSlide = 5
       } else {
-        this.activeSlide = 2
+        if (this.isSelfIHD) {
+          // Skip slid
+          this.answers.slide2 = "A"
+          this.slide2Next(this.answers.slide2)
+        } else {
+          this.activeSlide = 2
+        }
       }
     },
     slide5Next: function(geneApoB) {
@@ -112,6 +118,20 @@ export default {
         this.answers[key] = undefined
       }
       this.activeSlide = 1
+    }
+  },
+  computed: {
+    isSelfIHD: function() {
+      if (this.answers.slide1) {
+        return this.answers.slide1.find(v => v.id === 2)
+      }
+      return undefined
+    },
+    isRelativeIHD: function() {
+      if (this.answers.slide1) {
+        return this.answers.slide1.find(v => v.id === 3)
+      }
+      return undefined
     }
   }
 }
