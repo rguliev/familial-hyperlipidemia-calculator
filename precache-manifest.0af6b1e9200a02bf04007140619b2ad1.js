@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e09aa19bd3614d80e3a0",
-    "url": "/familial-hyperlipidemia-calculator/css/app.55fee358.css"
+    "revision": "fd73dc6af86f1bb2b77c",
+    "url": "/familial-hyperlipidemia-calculator/css/app.8ca0f40a.css"
   },
   {
     "revision": "c31d6e07e59c981ace11",
@@ -28,16 +28,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/familial-hyperlipidemia-calculator/img/bg_heart.8543e447.png"
   },
   {
+    "revision": "83058ddcb3377d6bab0bdfdebfec7e37",
+    "url": "/familial-hyperlipidemia-calculator/img/cgma_logo.83058ddc.png"
+  },
+  {
     "revision": "10c333806dc283a8d327106012377d72",
     "url": "/familial-hyperlipidemia-calculator/img/logo.10c33380.png"
   },
   {
-    "revision": "90bac522bef17d97f06fbf35183cacf4",
+    "revision": "d21b19791be1bc76027585424467914c",
     "url": "/familial-hyperlipidemia-calculator/index.html"
   },
   {
-    "revision": "e09aa19bd3614d80e3a0",
-    "url": "/familial-hyperlipidemia-calculator/js/app.485d3aea.js"
+    "revision": "fd73dc6af86f1bb2b77c",
+    "url": "/familial-hyperlipidemia-calculator/js/app.7e7bb375.js"
   },
   {
     "revision": "c31d6e07e59c981ace11",
