@@ -13,6 +13,10 @@
     </a>
     <h1 class="title">Заключение</h1>
 
+    <b-field label="ФИО:" position="is-centered" class="has-text-left">
+        <b-input v-model="patientName"></b-input>
+    </b-field>
+
     <BMessageWithHTML :title="fhMessage.title" :type="fhMessage.status" has-icon :text="fhMessage.text"/>
     <BMessageWithHTML v-for="(message, index) in fhGeneMessages" :key="`fh-${index}`" :type="message.status" has-icon :text="message.text"/>
     <BMessageWithHTML :title="statinMessage.title" :type="statinMessage.status" has-icon :text="statinMessage.text"/>
@@ -38,11 +42,13 @@
         props: {
             fhMessage: Object,
             statinMessage: Object,
-            fhGeneMessages: Object,
-            statinGeneMessages: Object
+            fhGeneMessages: Array,
+            statinGeneMessages: Array
         },
         data() {
-            return {}
+            return {
+                patientName: undefined
+            }
         },
         methods: {
             print: function () {

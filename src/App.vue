@@ -128,13 +128,13 @@ export default {
   computed: {
     isSelfIHD: function() {
       if (this.answers.slide1) {
-        return this.answers.slide1.find(v => v.id === 2)
+        return Boolean(this.answers.slide1.find(v => v.id === 2))
       }
       return undefined
     },
     isRelativeIHD: function() {
       if (this.answers.slide1) {
-        return this.answers.slide1.find(v => v.id === 3)
+        return Boolean(this.answers.slide1.find(v => v.id === 3))
       }
       return undefined
     },
@@ -154,7 +154,7 @@ export default {
         } else {
             const totalScore = this.answers.slide34
             if (totalScore > 8) {
-                message.text = `У больного <b>определенная</b> семейная гиперлипидемия &mdash; ${totalScore} баллов по критериям Голландской сети липидных клиник`
+                message.text = `У больного <b>определенная</b> семейная гиперлипидемия &mdash; ${totalScore} баллов по критериям Голландской сети липидных клиник. Рекомендовано обследование родственников (каскадный скрининг)`
                 message.status = "danger"
             } else if (totalScore >= 6) {
                 message.text = `У больного <b>возможная</b> семейная гиперлипидемия &mdash; ${totalScore} баллов по критериям Голландской сети липидных клиник`
