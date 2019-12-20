@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/familial-hyperlipidemia-calculator/precache-manifest.a437ff2890701c4a939bcb79cf8984ab.js"
+  "/familial-hyperlipidemia-calculator/precache-manifest.bdec24df2a5500514629da746b1546ab.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "familial-hyperlipidemia-calculator"});
